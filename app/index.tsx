@@ -1,15 +1,32 @@
-import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
+import { getToken } from "./src/utils/storage";
+import { useAuthStore } from "./src/store/auth.store";
 
 export default function Index() {
+  const { isAuthenticated } = useAuthStore();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    const restoreAuth = async () => {
+      const token = await getToken();
+
+      if (token) {
+        useAuthStore.setState({
+          token,
+          isAuthenticated: true,
+        });
+      }
+
+      setCheckingAuth(false);
+    };
+
+    restoreAuth();
+  }, []);
+
+  if (checkingAuth) return null;
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text className="text-red-800 text-2xl">Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <Redirect href={isAuthenticated ? "/(tabs)/UniGrp" : "/(auth)"} />
   );
 }
