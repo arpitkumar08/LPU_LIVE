@@ -1,20 +1,45 @@
+
+// todo: error handing in frontend according to if password is wrong or the feilds are empty
+
+
+import { Image } from "expo-image";
+import React, { useEffect, useState } from "react";
 import {
-  View,
+  ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Keyboard,
   TouchableWithoutFeedback,
+  View
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image } from "expo-image";
+import { loginUser } from "../src/services/auth.service";
+import { useAuthStore } from "../src/store/auth.store";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+
 
 const AuthScreen = () => {
+
+  const { login, isAuthenticated } = useAuthStore();
+
+
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+
+
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", () =>
@@ -29,6 +54,26 @@ const AuthScreen = () => {
       hide.remove();
     };
   }, []);
+
+
+  const handleLogin = async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      const data = await loginUser(username, password);
+      await login(data);
+      router.replace("/(tabs)/UniGrp");
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isFormValid = username.trim() !== "" && password.trim() !== "";
+
+
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -69,6 +114,8 @@ const AuthScreen = () => {
             <View className="mt-10">
               <Text className="text-base font-bold mb-2">ID</Text>
               <TextInput
+                value={username}
+                onChangeText={setUsername}
                 placeholder="Enter your ID"
                 keyboardType="number-pad"
                 className="border border-gray-300 rounded-xl px-4 py-3 text-base"
@@ -77,19 +124,52 @@ const AuthScreen = () => {
 
             <View className="mt-4">
               <Text className="text-base font-bold mb-2">Password</Text>
-              <TextInput
-                placeholder="Enter your password"
-                secureTextEntry
-                className="border border-gray-300 rounded-xl px-4 py-3 text-base"
-              />
+
+              <View className="relative">
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Enter your password"
+                  secureTextEntry={!showPassword}
+                  className="border border-gray-300 rounded-xl px-4 py-3 pr-12 text-base"
+                />
+
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off" : "eye"}
+                    size={22}
+                    color="#6b7280"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
+
             {/* Button */}
-            <TouchableOpacity className="bg-[#F97217] py-4 rounded-xl mt-8">
-              <Text className="text-white text-center text-lg font-semibold">
-                Sign In
-              </Text>
-            </TouchableOpacity>
+            <Pressable
+              onPress={handleLogin}
+              disabled={loading || !isFormValid}
+              className={`py-4 rounded-xl mt-8 flex-row items-center justify-center ${loading || !isFormValid ? "bg-gray-400" : "bg-[#F97217]"
+                }`}
+            >
+              {loading ? (
+                <>
+                  <ActivityIndicator color="#fff" />
+                  <Text className="text-white text-lg font-semibold ml-2">
+                    Signing in...
+                  </Text>
+                </>
+              ) : (
+                <Text className="text-white text-center text-lg font-semibold">
+                  Sign In
+                </Text>
+              )}
+            </Pressable>
+
+
 
           </ScrollView>
         </TouchableWithoutFeedback>

@@ -1,13 +1,21 @@
-import { Tabs } from 'expo-router'
-import React from 'react'
+import { Redirect, Tabs } from "expo-router";
+import { useAuthStore } from "../src/store/auth.store";
 
-const TabsLayout = () => {
+export default function TabsLayout() {
+  const isAuthenticated = useAuthStore(
+    (state) => state.isAuthenticated
+  );
+
+  if (!isAuthenticated) {
+    return <Redirect href={{ pathname: "/(auth)" }} />;
+  }
+
   return (
     <Tabs>
-      <Tabs.Screen name='UniGrp' />
-      <Tabs.Screen name='Setting' />
+      <Tabs.Screen name="UniGrp" />
+      <Tabs.Screen name="PersonaChat" />
+      <Tabs.Screen name="PersonalGrp" />
+      <Tabs.Screen name="Setting" />
     </Tabs>
-  )
+  );
 }
-
-export default TabsLayout

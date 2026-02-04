@@ -1,11 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Stack } from 'expo-router'
+import { Redirect, Stack } from "expo-router";
+import { useAuthStore } from "../src/store/auth.store";
 
 const AuthLayout = () => {
-  return (
-    <Stack screenOptions={{headerShown: false}} />
-  )
-}
+  const { isAuthenticated } = useAuthStore();
 
-export default AuthLayout
+  if (isAuthenticated) {
+    return <Redirect href={{ pathname: "/(tabs)/UniGrp" }} />;
+  }
+
+  return <Stack screenOptions={{ headerShown: false }} />;
+};
+
+export default AuthLayout;
