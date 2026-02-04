@@ -11,11 +11,12 @@ export default function TabsLayout() {
   }
 
   return (
-    <Tabs>
+    <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="UniGrp" />
       <Tabs.Screen name="PersonaChat" />
       <Tabs.Screen name="PersonalGrp" />
       <Tabs.Screen name="Setting" />
     </Tabs>
   );
+
 }
