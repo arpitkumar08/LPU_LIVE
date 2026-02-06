@@ -130,7 +130,7 @@ const AuthScreen = () => {
                   value={password}
                   onChangeText={setPassword}
                   placeholder="Enter your password"
-                  secureTextEntry={!showPassword}
+                  // secureTextEntry={!showPassword}
                   className="border border-gray-300 rounded-xl px-4 py-3 pr-12 text-base"
                 />
 

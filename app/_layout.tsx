@@ -1,30 +1,34 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import "../global.css";
 import { useAuthStore } from "./src/store/auth.store";
-import { useEffect } from "react";
-
 export default function RootLayout() {
   const { hydrateAuth } = useAuthStore();
-  
+
   useEffect(() => {
     hydrateAuth();
   }, []);
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: "#ffffff" },
-      }}
-    >
-      <Stack.Screen
-        name="(auth)"
-        options={{ headerShown: false, animation: "fade" }}
-      />
-      <Stack.Screen
-        name="(tabs)"
-        options={{ headerShown: false, animation: "fade" }}
-      />
-    </Stack>
+    <>
+      <StatusBar style="light" backgroundColor="#000000" />
+
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: "#000000" },
+        }}
+      >
+        <Stack.Screen
+          name="(auth)"
+          options={{ animation: "fade" }}
+        />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ animation: "fade" }}
+        />
+      </Stack>
+    </>
   );
 }
