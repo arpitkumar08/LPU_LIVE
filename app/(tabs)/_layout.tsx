@@ -10,12 +10,14 @@ export default function TabsLayout() {
   }
 
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />}>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <TabBar {...props} />}
+    >
       <Tabs.Screen name="UniGrp" />
       <Tabs.Screen name="PersonaChat" />
       <Tabs.Screen name="PersonalGrp" />
       <Tabs.Screen name="Setting" />
     </Tabs>
   );
-
 }

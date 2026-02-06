@@ -5,8 +5,8 @@ import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } f
 
 const icons: Record<string, (props: any) => React.ReactNode> = {
   UniGrp: (props) => <School size={24} {...props} />,
-  PersonaChat: (props) => <FolderLock size={24} {...props} />,
-  PersonalGrp: (props) => <UserRound size={24} {...props} />,
+  PersonalGrp: (props) => <FolderLock size={24} {...props} />,
+  PersonaChat: (props) => <UserRound size={24} {...props} />,
   Setting: (props) => <Settings size={24} {...props} />,
 };
 
