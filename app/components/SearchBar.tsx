@@ -1,13 +1,22 @@
-import { Search } from "lucide-react-native";
+import { Search, X } from "lucide-react-native";
 import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 
-export const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
+export const SearchBar = ({
+  onSearch,
+}: {
+  onSearch: (query: string) => void;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (text: string) => {
     setSearchQuery(text);
     onSearch(text);
+  };
+
+  const handleClear = () => {
+    setSearchQuery("");
+    onSearch("");
   };
 
   return (
@@ -20,6 +29,10 @@ export const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) =
         placeholderTextColor="#999"
         className="flex-1 ml-3 text-base text-[#333] h-full"
       />
+
+      {searchQuery.length > 0 && (
+        <X onPress={handleClear} size={22} color="#888" />
+      )}
     </View>
   );
 };
