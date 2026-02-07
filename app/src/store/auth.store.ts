@@ -58,7 +58,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       personalChatName: g[8],
     }));
 
-    // console.log("NORMALIZED GROUPS --->", normalizedGroups);
 
     await saveGroups(normalizedGroups);
     await saveUser(data);

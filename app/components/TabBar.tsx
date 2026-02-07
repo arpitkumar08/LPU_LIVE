@@ -85,7 +85,7 @@ export default function TabBar({ state, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   tabBar: {
     position: "absolute",
-    bottom: 30,
+    bottom: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
