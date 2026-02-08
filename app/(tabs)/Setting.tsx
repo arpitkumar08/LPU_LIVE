@@ -1,40 +1,36 @@
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetTextInput, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { Bug, ChevronRight, LogOut, Moon, Sun } from "lucide-react-native";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuthStore } from "../src/store/auth.store";
 
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import AppBottomSheet from "../components/AppBottomSheet";
 import Title from "../components/Title";
-
-import * as ImagePicker from "expo-image-picker";
+import { useAuthStore } from "../src/store/auth.store";
+import { InfoBox } from "../components/InfoCard";
 
 const Setting = () => {
   const { logout, user } = useAuthStore();
   const router = useRouter();
+
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [bugImage, setBugImage] = useState<string | null>(null);
+  const [bugDescription, setBugDescription] = useState("");
 
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["70%"], []);
+  const bugSheetRef = useRef<BottomSheetModal>(null);
 
   const openBugSheet = () => {
-    bottomSheetRef.current?.present();
+    bugSheetRef.current?.present();
   };
 
   const pickBugImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permission =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permission.granted) {
-      return;
-    }
+    if (!permission.granted) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -47,29 +43,31 @@ const Setting = () => {
     }
   };
 
+  const handleReportBug = () => {
+    bugSheetRef.current?.dismiss();
+    setBugDescription("");
+    setBugImage(null);
+  };
+
   const handleLogout = async () => {
-    try {
-      await logout();
-      router.replace("/");
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
+    await logout();
+    router.replace("/");
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="px-4 pt-4 flex-1">
+      <View className="flex-1 px-4 pt-4">
         <Title title="Settings" />
 
-        {/* Profile Section */}
+        {/* PROFILE */}
         <View className="items-center mt-8">
           <Image
             source={{ uri: user?.UserImageUrl }}
             style={{ width: 96, height: 96, borderRadius: 50 }}
             contentFit="cover"
-            cachePolicy="memory-disk"
           />
-          <View className="items-center justify-center border border-gray-200 px-4 py-4 mt-4 rounded-xl">
+
+          <View className="items-center mt-4 border border-gray-200 px-4 py-4 rounded-xl">
             <Text className="text-xl font-bold text-black">
               {user?.Name || "Student Name"}
             </Text>
@@ -79,10 +77,9 @@ const Setting = () => {
           </View>
         </View>
 
-        {/* Settings Options */}
+        {/* OPTIONS */}
         <View className="mt-10 space-y-4">
-          {/* Theme Toggle */}
-          <View className="flex-row items-center justify-between border border-gray-200  mb-2 bg-gray-50 p-4 rounded-xl">
+          <View className="flex-row items-center justify-between bg-gray-50 border border-gray-200 p-4 rounded-xl">
             <View className="flex-row items-center gap-3">
               <View className="bg-orange-100 p-2 rounded-full">
                 {isDarkMode ? (
@@ -95,22 +92,21 @@ const Setting = () => {
                 Dark Mode
               </Text>
             </View>
+
             <Switch
               value={isDarkMode}
               onValueChange={setIsDarkMode}
               trackColor={{ false: "#E5E7EB", true: "#F97217" }}
-              thumbColor={"#fff"}
-              className="transition-all duration-300"
+              thumbColor="#fff"
             />
           </View>
 
-          {/* Bug Report */}
           <TouchableOpacity
             onPress={openBugSheet}
-            className="flex-row items-center justify-between border border-gray-200  mb-2 bg-gray-50 p-4 rounded-xl"
+            className="flex-row items-center justify-between bg-gray-50 border border-gray-200 mt-2 p-4 rounded-xl"
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-orange-100 p-2 rounded-full">
+              <View className="bg-orange-100  p-2 rounded-full">
                 <Bug size={20} color="#F97217" />
               </View>
               <Text className="text-base font-semibold text-black">
@@ -120,146 +116,107 @@ const Setting = () => {
             <ChevronRight size={20} color="#9CA3AF" />
           </TouchableOpacity>
 
-          {/* Logout */}
           <TouchableOpacity
             onPress={handleLogout}
-            className="flex-row items-center justify-between bg-red-50 p-4 rounded-xl mt-4"
+            className="flex-row items-center bg-red-50 p-4 rounded-xl mt-4"
           >
-            <View className="flex-row items-center gap-3">
-              <View className="bg-red-100 p-2 rounded-full">
-                <LogOut size={20} color="#EF4444" />
-              </View>
-              <Text className="text-base font-semibold text-red-500">
-                Logout
-              </Text>
+            <View className="bg-red-100 p-2 rounded-full mr-3">
+              <LogOut size={20} color="#EF4444" />
             </View>
+            <Text className="text-base font-semibold text-red-500">
+              Logout
+            </Text>
           </TouchableOpacity>
         </View>
-        <BottomSheetModal
-          ref={bottomSheetRef}
-          index={0}
-          snapPoints={snapPoints}
-          enablePanDownToClose
-          keyboardBehavior="interactive"
-          keyboardBlurBehavior="restore"
-          backdropComponent={(props) => (
-            <BottomSheetBackdrop
-              {...props}
-              disappearsOnIndex={-1}
-              appearsOnIndex={0}
-              pressBehavior="close"
-            />
-          )}
+      </View>
+
+      {/* BOTTOM SHEET */}
+      <AppBottomSheet
+        ref={bugSheetRef}
+        snapPoints={["65%","75%"]}
+      >
+        <BottomSheetScrollView 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <BottomSheetView className="p-5 flex-1 bg-white">
-            <Text className="text-2xl text-center font-bold mb-6 text-black">
-              Report Bug
+          <Text className="text-2xl text-center font-bold mb-6 text-black">
+            Report Bug
+          </Text>
+
+          <View className="flex-row flex-wrap justify-between gap-y-4">
+            <InfoBox label="Name" value={user?.Name.split(":")[0].trim()} />
+            <InfoBox
+              label="ID"
+              value={
+                user?.Name?.includes(":")
+                  ? user?.Name.split(":")[1].trim()
+                  : "N/A"
+              }
+            />
+            <InfoBox label="Category" value={user?.Category} />
+            <InfoBox label="Department" value={user?.Department} />
+          </View>
+
+          <View className="mt-4">
+            <Text className="text-gray-500 text-sm mb-2 ml-1">
+              Bug Description
+            </Text>
+            <BottomSheetTextInput
+              value={bugDescription}
+              onChangeText={setBugDescription}
+              onFocus={() => {
+                bugSheetRef.current?.snapToIndex(1);
+              }}
+              placeholder="Describe the issue..."
+              placeholderTextColor="#9CA3AF"
+              multiline
+              numberOfLines={6}
+              style={{ minHeight: 120, textAlignVertical: "top" }}
+              className="border border-gray-200 rounded-xl p-4 bg-gray-50 text-black"
+            />
+          </View>
+
+          <View className="mt-5">
+            <Text className="text-gray-500 text-sm mb-2 ml-1">
+              Screenshot (optional)
             </Text>
 
-            {/* USER INFO */}
-            <View className="flex-row flex-wrap justify-between gap-y-4">
-              <View className="w-[48%] p-3 bg-gray-50 rounded-xl">
-                <Text className="text-gray-500 text-sm mb-1">Name</Text>
-                <Text
-                  className="text-black font-semibold text-lg"
-                  numberOfLines={1}
-                >
-                  {user?.Name?.includes(":")
-                    ? user?.Name?.split(":")[0].trim()
-                    : user?.Name || "N/A"}
-                </Text>
-              </View>
-
-              <View className="w-[48%] p-3 bg-gray-50 rounded-xl">
-                <Text className="text-gray-500 text-sm mb-1">ID</Text>
-                <Text
-                  className="text-black font-semibold text-lg"
-                  numberOfLines={1}
-                >
-                  {user?.Name?.includes(":")
-                    ? user?.Name?.split(":")[1].trim()
-                    : "N/A"}
-                </Text>
-              </View>
-
-              <View className="w-[48%] p-3 bg-gray-50 rounded-xl">
-                <Text className="text-gray-500 text-sm mb-1">Category</Text>
-                <Text
-                  className="text-black font-semibold text-lg"
-                  numberOfLines={1}
-                >
-                  {user?.Category || "N/A"}
-                </Text>
-              </View>
-
-              <View className="w-[48%] p-3 bg-gray-50 rounded-xl">
-                <Text className="text-gray-500 text-sm mb-1">Department</Text>
-                <Text
-                  className="text-black font-semibold text-lg"
-                  numberOfLines={2}
-                >
-                  {user?.Department || "N/A"}
-                </Text>
-              </View>
-            </View>
-
-            <View className="mt-4">
-              <Text className="text-gray-500 text-sm mb-2 font-medium ml-1">
-                Bug Description
-              </Text>
-              <BottomSheetTextInput
-                placeholder="Describe the issue in detail..."
-                placeholderTextColor="#9CA3AF"
-                multiline
-                numberOfLines={6}
-                style={{
-                  minHeight: 120,
-                  textAlignVertical: "top",
-                }}
-                className="border border-gray-200 rounded-xl p-4 bg-gray-50 text-black text-base"
-              />
-            </View>
-
-            <View className="mt-5">
-              <Text className="text-gray-500 text-sm mb-2 font-medium ml-1">
-                Screenshot (optional)
-              </Text>
-
-              {bugImage ? (
-                <View className="relative">
-                  <Image
-                    source={{ uri: bugImage }}
-                    style={{ height: 160, borderRadius: 12 }}
-                    contentFit="cover"
-                  />
-
-                  <TouchableOpacity
-                    onPress={() => setBugImage(null)}
-                    className="absolute top-2 right-2 bg-black/60 px-3 py-1 rounded-full"
-                  >
-                    <Text className="text-white text-xs">Remove</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
+            {bugImage ? (
+              <View className="relative">
+                <Image
+                  source={{ uri: bugImage }}
+                  style={{ height: 160, borderRadius: 12 }}
+                  contentFit="cover"
+                />
                 <TouchableOpacity
-                  onPress={pickBugImage}
-                  className="border border-dashed border-gray-300 rounded-xl p-4 items-center justify-center bg-gray-50"
+                  onPress={() => setBugImage(null)}
+                  className="absolute top-2 right-2 bg-black/60 px-3 py-1 rounded-full"
                 >
-                  <Text className="text-gray-600 font-medium">
-                    + Add Screenshot
-                  </Text>
+                  <Text className="text-white text-xs">Remove</Text>
                 </TouchableOpacity>
-              )}
-            </View>
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={pickBugImage}
+                className="border border-dashed border-gray-300 rounded-xl p-4 bg-gray-50 items-center"
+              >
+                <Text className="text-gray-600 font-medium">
+                  + Add Screenshot
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
-            <TouchableOpacity className="bg-orange-500 py-3 rounded-xl mt-6">
-              <Text className="text-white text-center font-semibold text-lg">
-                Send Bug Report
-              </Text>
-            </TouchableOpacity>
-          </BottomSheetView>
-        </BottomSheetModal>
-      </View>
+          <TouchableOpacity
+            onPress={handleReportBug}
+            className="bg-orange-500 py-3 rounded-xl mt-6 mb-4"
+          >
+            <Text className="text-white text-center font-semibold text-lg">
+              Send Bug Report
+            </Text>
+          </TouchableOpacity>
+        </BottomSheetScrollView>
+      </AppBottomSheet>
     </SafeAreaView>
   );
 };

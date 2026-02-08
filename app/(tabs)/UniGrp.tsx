@@ -1,6 +1,6 @@
 import { MessageSquare, Plus } from "lucide-react-native";
 import React, { useState } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/Button";
 import Chat from "../components/Chat";
@@ -41,6 +41,8 @@ const UniGrp = () => {
           <Button title="New Group" icon={<Plus size={16} color="#FF740B" />} />
         </View>
       </View>
+
+   
 
       <Chat groups={universityGroups} />
     </SafeAreaView>
