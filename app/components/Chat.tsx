@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { ChevronRightIcon, Search } from "lucide-react-native";
 import React from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { GroupItem } from "../src/types/chat";
 
 interface ChatProps {
@@ -12,7 +12,7 @@ const Chat: React.FC<ChatProps> = ({ groups }) => {
   // console.log("Chat: groups prop:", JSON.stringify(groups, null, 2));
 
   const renderItem = ({ item }: { item: GroupItem }) => (
-    <View className="px-4 py-3 border-t border-gray-200 flex-row gap-4">
+    <TouchableOpacity className="px-4 py-3 border-t border-gray-200 flex-row gap-4">
       <Image
         source={require("../../assets/images/lpulogo.png")}
         style={{ width: 50, height: 50 }}
@@ -38,7 +38,7 @@ const Chat: React.FC<ChatProps> = ({ groups }) => {
       <View className="items-center justify-center">
         <ChevronRightIcon size={16} color="#9CA3AF" />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
