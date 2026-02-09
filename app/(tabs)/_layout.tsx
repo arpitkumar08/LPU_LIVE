@@ -1,5 +1,6 @@
-import { Redirect, Tabs } from "expo-router";
+import { Redirect } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { MaterialTopTabs } from "../components/MaterialTopTabs";
 import { useAuthStore } from "../src/store/auth.store";
 
 import TabBar from "../components/TabBar";
@@ -13,15 +14,15 @@ export default function TabsLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Tabs
-        screenOptions={{ headerShown: false }}
+      <MaterialTopTabs
+        tabBarPosition="bottom"
         tabBar={(props) => <TabBar {...props} />}
       >
-        <Tabs.Screen name="UniGrp" />
-        <Tabs.Screen name="PersonaChat" />
-        <Tabs.Screen name="PersonalGrp" />
-        <Tabs.Screen name="Setting" />
-      </Tabs>
+        <MaterialTopTabs.Screen name="UniGrp" />
+        <MaterialTopTabs.Screen name="PersonaChat" />
+        <MaterialTopTabs.Screen name="PersonalGrp" />
+        <MaterialTopTabs.Screen name="Setting" />
+      </MaterialTopTabs>
     </GestureHandlerRootView>
   );
 }

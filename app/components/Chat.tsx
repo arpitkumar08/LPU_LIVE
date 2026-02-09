@@ -20,16 +20,16 @@ const Chat: React.FC<ChatProps> = ({ groups }) => {
       />
 
       <View className="flex-1">
-        <Text className="text-base font-semibold text-black">
+        <Text className="text-base font-semibold text-black dark:text-white">
           {item.isOneToOne ? `${item.personalChatName}` : item.name}
         </Text>
 
-        <Text className="text-sm text-gray-500 mt-1">
+        <Text className="text-sm text-gray-500 mt-1 dark:text-gray-400">
           {item.groupLastMessage || "No recent messages"}
         </Text>
 
         {item.lastMessageTime ? (
-          <Text className="text-xs text-gray-400 mt-1">
+          <Text className="text-xs text-gray-400 mt-1 dark:text-gray-500">
             {item.lastMessageTime}
           </Text>
         ) : null}
@@ -51,7 +51,7 @@ const Chat: React.FC<ChatProps> = ({ groups }) => {
       ListEmptyComponent={
         <View className="items-center justify-center mt-20">
           <Search size={48} color="#9CA3AF" />
-          <Text className="text-center text-gray-500 mt-2 font-medium">
+          <Text className="text-center text-gray-500 mt-2 font-medium dark:text-gray-400">
             No Chat Group Available
           </Text>
         </View>

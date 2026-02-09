@@ -23,7 +23,7 @@ const PersonaChat = () => {
     setSearchQuery(query);
   };
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white dark:bg-[#101927]">
       <View className="px-4 pt-4">
         <Title title="Personal Chat" />
 

@@ -1,7 +1,12 @@
 import { FolderLock, School, Settings, UserRound } from "lucide-react-native";
 import React, { useEffect } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { Pressable } from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 const icons: Record<string, (props: any) => React.ReactNode> = {
   UniGrp: (props) => <School size={24} {...props} />,
@@ -17,6 +22,8 @@ interface TabBarButtonProps {
   routeName: string;
 }
 
+import { useColorScheme } from "nativewind";
+
 export default function TabBarButton({
   onPress,
   onLongPress,
@@ -24,6 +31,7 @@ export default function TabBarButton({
   routeName,
 }: TabBarButtonProps) {
   const Icon = icons[routeName];
+  const { colorScheme } = useColorScheme();
 
   const scale = useSharedValue(0);
 
@@ -41,26 +49,21 @@ export default function TabBarButton({
     };
   });
 
+  const iconColor = isFocused
+    ? "#fff"
+    : colorScheme === "dark"
+      ? "#9CA3AF"
+      : "#222";
+
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
-      style={[styles.tabbarItem]}
+      className="flex-1 items-center justify-center p-2 gap-1 rounded-xl"
     >
       <Animated.View style={animatedIconStyle}>
-        {Icon && <Icon color={isFocused ? "#fff" : "#222"} />}
+        {Icon && <Icon color={iconColor} />}
       </Animated.View>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  tabbarItem: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    gap: 5,
-    borderRadius: 10,
-  },
-});
