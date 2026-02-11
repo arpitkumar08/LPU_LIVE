@@ -38,7 +38,7 @@ export default function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   return (
     <View
       onLayout={onTabbarLayout}
-      className="absolute bottom-5 mx-[60px] flex-row items-center justify-between rounded-[35px] bg-[#FFECD4] px-5 py-2.5 shadow-lg shadow-black/25 elevation-2 dark:bg-gray-900 dark:border dark:border-gray-800"
+      className="absolute bottom-5 mx-[60px] flex-row items-center justify-between rounded-[35px]  px-5 py-2.5 shadow-lg shadow-black/25 elevation-2 dark:bg-gray-900 dark:border dark:border-gray-800"
     >
       <Animated.View
         style={[

@@ -82,7 +82,7 @@ const AuthScreen = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
+          <ScrollView 
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               flexGrow: 1,
@@ -168,9 +168,6 @@ const AuthScreen = () => {
                 </Text>
               )}
             </Pressable>
-
-
-
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
